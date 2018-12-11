@@ -1,12 +1,14 @@
 package com.llq;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 public class DataCollector {
     private static Map<String, String> diseases = new HashMap<>();
@@ -25,7 +27,7 @@ public class DataCollector {
                     .get();
             // 找到各个疾病
             Elements diseaseCards = doc.getElementsByClass("disease-filter-list-card divide");
-            for(int i=0;i<diseaseCards.size();i++) {
+            for (int i = 0; i < diseaseCards.size(); i++) {
                 String diseaseName = diseaseCards.get(i).text();
                 String link = diseaseCards.get(i).attr("href") + "/detail";
                 diseases.put(diseaseName, link);
@@ -47,16 +49,16 @@ public class DataCollector {
         // 依次爬每一个链接
         boolean isBanned = false;
         int index = 0, total = diseases.size();
-        for(Map.Entry<String, String> entry : diseases.entrySet()) {
+        for (Map.Entry<String, String> entry : diseases.entrySet()) {
             // IP被封
-            if(isBanned) {
+            if (isBanned) {
                 System.out.println(entry.getKey() + " is not captured: " + entry.getValue());
                 continue;
             }
             // 省略已经爬取的东西
             String fileName = "data/" + entry.getKey() + ".txt";
             File f = new File(fileName);
-            if(f.exists())
+            if (f.exists())
                 continue;
             // 爬取过程
             try {
@@ -64,7 +66,7 @@ public class DataCollector {
                 Disease content = new Disease(entry.getKey(), entry.getValue());
                 content.save2file();
                 System.out.println("Disease: " + entry.getKey() + " is captured.");
-            } catch(InterruptedException e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (RuntimeException e) {
                 isBanned = true;

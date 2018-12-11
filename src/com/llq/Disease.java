@@ -3,7 +3,11 @@ package com.llq;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import java.io.*;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 public class Disease {
@@ -24,7 +28,7 @@ public class Disease {
                     .timeout(10000)
                     .get();
             Elements details = doc.getElementsByClass("disease-detail-content-box");
-            for(int i=0;i<details.size();i++) {
+            for (int i = 0; i < details.size(); i++) {
                 String content = details.get(i).toString()
                         .replaceAll("<[^><]*>", "")
                         .replaceAll("[ ]", "")
@@ -41,7 +45,7 @@ public class Disease {
         File f = new File(fileName);
         try (OutputStream os = new FileOutputStream(f)) {
             byte[] data;
-            for(String entry: contents) {
+            for (String entry : contents) {
                 data = entry.getBytes(StandardCharsets.UTF_8);
                 os.write(data);
             }
