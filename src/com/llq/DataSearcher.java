@@ -63,9 +63,8 @@ class DataSearcher {
         while (true) {
             fileNum = 0;
             System.out.println("第" + Integer.toString(index) + "页");
-            for (ScoreDoc scoreDoc : docs.scoreDocs) { // 取出每条查询结果
-                if (fileNum == 10)
-                    break;
+            for (int i = 10 * index - 10; i < docs.scoreDocs.length && i < 10 * index; i++) {
+                ScoreDoc scoreDoc = docs.scoreDocs[i];
                 Document doc = searcher.doc(scoreDoc.doc); //  scoreDoc.doc相当于docID,根据这个docID来获取文档
                 path = doc.get("path");
                 paths[fileNum++] = path;
