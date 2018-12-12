@@ -5,7 +5,7 @@ public class Main {
         String dataPath = "./data/raw/",
                 indexPath = "./data/index/",
                 historyPath = "./data/history";
-        int baseTime = 2000, randTime = 5000;
+        int baseTime = 2000, randTime = 4000;
 
         // 收集数据并保存
         DataCollector collector = new DataCollector(dataPath, baseTime, randTime);

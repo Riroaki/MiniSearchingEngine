@@ -51,7 +51,7 @@ class DataCollector {
         //等待数据加载的时间
         //为了防止服务器封锁，这里的时间要模拟人的行为，随机且不能太短
         Random random = new Random();
-        rand = random.nextInt(rand);
+        int randT = random.nextInt(rand);
 
         // 依次爬每一个链接
         for (Map.Entry<String, String> entry : diseases.entrySet()) {
@@ -62,8 +62,8 @@ class DataCollector {
                 continue;
             // 爬取过程
             try {
-                Thread.sleep(base + rand);
-                Disease content = new Disease(entry.getKey(), entry.getValue());
+                Thread.sleep(base + randT);
+                Disease content = new Disease(entry.getKey(), entry.getValue(), path);
                 content.save2file();
                 System.out.println("Disease: " + entry.getKey() + " is captured.");
             } catch (InterruptedException e) {

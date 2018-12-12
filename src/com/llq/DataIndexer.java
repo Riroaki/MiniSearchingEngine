@@ -12,16 +12,13 @@ import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Date;
 
-public class DataIndexer {
+class DataIndexer {
 
     private String indexPath, docsPath;
 
@@ -39,6 +36,11 @@ public class DataIndexer {
             System.out.println("Document directory '" + docDir.toAbsolutePath() + "' does not exist or is not readable, please check the path");
             System.exit(1);
         }
+
+        final File indexFilePath = new File(indexPath);
+        String[] fileList = indexFilePath.list();
+        if (fileList.length > 0)
+            return 0;
 
         Date start = new Date();
         try {
@@ -96,7 +98,7 @@ public class DataIndexer {
             Field pathField = new StringField("path", file.toString(), Field.Store.YES);
             doc.add(pathField);
             doc.add(new TextField("contents", new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))));
-            System.out.println("adding " + file);
+//            System.out.println("adding " + file);
             writer.addDocument(doc);
         }
     }

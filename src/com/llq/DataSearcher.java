@@ -93,7 +93,7 @@ class DataSearcher {
                 path = doc.get("path");
                 paths[fileNum++] = path;
                 System.out.print(Integer.toString(index * 10 + fileNum - 10) + ": ");
-                System.out.println(path.substring(7, path.length() - 4)); // path是刚刚建立索引的时候我们定义的一个字段
+                System.out.println(path.substring(11, path.length() - 4)); // path是刚刚建立索引的时候我们定义的一个字段
             }
             System.out.println("输入'p'可以看上一页，输入'n'以查看下一页；输入'q'可以退出本次查询；" +
                     "输入某一个索引前的序号可以查看详细内容");

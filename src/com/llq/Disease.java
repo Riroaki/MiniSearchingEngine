@@ -12,21 +12,22 @@ import java.nio.charset.StandardCharsets;
 
 class Disease {
     private String[] contents = {"简介:", "\n\n症状:", "\n\n病因:", "\n\n诊断:", "\n\n治疗:", "\n\n生活:", "\n\n预防:"};
-    private String fileName;
+    private String fileName, url;
 
-    Disease(String diseaseName, String diseaseUrl) throws RuntimeException {
-        fileName = "./data/" + diseaseName + ".txt";
+    Disease(String diseaseName, String diseaseUrl, String savePath) throws RuntimeException {
+        fileName = savePath + diseaseName + ".txt";
+        url = diseaseUrl;
 
         // 爬数据
         try {
-            collectData(diseaseUrl);
+            collectData();
         } catch (IOException e) {
             System.out.println("Oops...your IP has been banned by dxy.com:(");
             throw new RuntimeException("IP", e);
         }
     }
 
-    private void collectData(String url) throws IOException {
+    private void collectData() throws IOException {
         String ua = "Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1 (KHTML, like Gecko) CriOS/68.0.3440.106 Mobile/13B143 Safari/601.1.46";
 
         Document doc = Jsoup.connect(url)
