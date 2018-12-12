@@ -23,14 +23,17 @@ import java.util.Scanner;
 class DataSearcher {
 
     private Scanner s;
+    private String historyPath, indexPath;
 
-    DataSearcher() {
+    DataSearcher(String historyPath, String indexPath) {
         s = new Scanner(System.in);
+        this.historyPath = historyPath;
+        this.indexPath = indexPath;
         System.out.println(" * * * 欢迎使用迷你搜索引擎 * * *");
         System.out.println("你可以输入任意在这里看到的信息：https://dxy.com/diseases.");
     }
 
-    int Search(String historyPath, String indexPath) throws Exception {
+    int Search() throws Exception {
         String q, history;
 
         System.out.print(">> ");

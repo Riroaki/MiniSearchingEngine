@@ -10,10 +10,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class DataCollector {
-    private static Map<String, String> diseases = new HashMap<>();
+class DataCollector {
+    private Map<String, String> diseases = new HashMap<>();
+    private String path;
+    private int base, rand;
 
-    private static void collectURLs() {
+    DataCollector(String savePath, int baseTime, int randTime) {
+        path = savePath;
+        base = baseTime;
+        rand = randTime;
+        collectURLs();
+    }
+
+    private void collectURLs() {
         String baseURL = "https://m.dxy.com/diseases";
         String ua = "Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1 (KHTML, like Gecko) CriOS/68.0.3440.106 Mobile/13B143 Safari/601.1.46";
 
@@ -38,44 +47,31 @@ public class DataCollector {
         }
     }
 
-    private static void parseURLs() {
+    int parseURLs() {
         //等待数据加载的时间
         //为了防止服务器封锁，这里的时间要模拟人的行为，随机且不能太短
-        int waitLoadBaseTime = 2000;
-        int waitLoadRandomTimeBound = 5000;
-        Random rand = new Random();
-        int randomAddition = rand.nextInt(waitLoadRandomTimeBound);
+        Random random = new Random();
+        rand = random.nextInt(rand);
 
         // 依次爬每一个链接
-        boolean isBanned = false;
-        int index = 0, total = diseases.size();
         for (Map.Entry<String, String> entry : diseases.entrySet()) {
-            // IP被封
-            if (isBanned) {
-                System.out.println(entry.getKey() + " is not captured: " + entry.getValue());
-                continue;
-            }
             // 省略已经爬取的东西
-            String fileName = "data/" + entry.getKey() + ".txt";
+            String fileName = path + entry.getKey() + ".txt";
             File f = new File(fileName);
             if (f.exists())
                 continue;
             // 爬取过程
             try {
-                Thread.sleep(waitLoadBaseTime + randomAddition);
+                Thread.sleep(base + rand);
                 Disease content = new Disease(entry.getKey(), entry.getValue());
                 content.save2file();
                 System.out.println("Disease: " + entry.getKey() + " is captured.");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (RuntimeException e) {
-                isBanned = true;
+                return -1;
             }
         }
-    }
-
-    public static void main(String[] args) {
-        collectURLs();
-        parseURLs();
+        return 0;
     }
 }
