@@ -8,7 +8,7 @@ public class Main {
 
         try {
             do {
-                result = searcher.Search();
+                result = searcher.Search("./history", "./index/");
             } while (result == 0);
         } catch (Exception e) {
             e.printStackTrace();

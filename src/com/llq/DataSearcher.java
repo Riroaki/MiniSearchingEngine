@@ -14,6 +14,9 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
@@ -27,8 +30,9 @@ class DataSearcher {
         System.out.println("你可以输入任意在这里看到的信息：https://dxy.com/diseases.");
     }
 
-    int Search() throws Exception {
-        String q;
+    int Search(String historyPath, String indexPath) throws Exception {
+        String q, history;
+
         System.out.print(">> ");
         if (s.hasNextLine()) {
             q = s.nextLine();
@@ -37,10 +41,27 @@ class DataSearcher {
                 return 0;
             } else if ("quit".equals(q))
                 return -1;
+            else if ("history".equals(q)) {
+                int index = 1;
+                // 读取历史记录
+                try {
+                    File hisPath = new File(historyPath);
+                    history = new Scanner(hisPath).useDelimiter("\\Z").next();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    return -2;
+                }
+                // 打印历史记录
+                for (String his : history.split("\n")) {
+                    System.out.print(Integer.toString(index++));
+                    System.out.println(": " + his);
+                }
+                return 0;
+            }
         } else
             return 0;
 
-        Directory dir = FSDirectory.open(Paths.get("./index/")); //  索引所在的位置
+        Directory dir = FSDirectory.open(Paths.get(indexPath)); //  索引所在的位置
         IndexReader reader = DirectoryReader.open(dir);
         IndexSearcher searcher = new IndexSearcher(reader);
         Analyzer analyzer = new StandardAnalyzer(); // 标准分词器
@@ -87,8 +108,7 @@ class DataSearcher {
                     else
                         index++;
                 } else if ("q".equals(input)) {
-                    reader.close();
-                    return 0;
+                    break;
                 } else try {
                     int entry = Integer.parseInt(input) - 1;
                     if (entry <= index * 10 && entry >= index * 10 - 10) {
@@ -104,5 +124,19 @@ class DataSearcher {
                 }
             }
         }
+
+        reader.close();
+        // 将本次搜索写入历史
+        try {
+            // 打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
+            FileWriter writer = new FileWriter(historyPath, true);
+            writer.write(q);
+            writer.write("\n");
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return -2;
+        }
+        return 0;
     }
 }
